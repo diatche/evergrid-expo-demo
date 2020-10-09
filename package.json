@@ -5,7 +5,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "eject": "expo eject"
+    "eject": "expo eject",
+    "watch": "echo 'Watching recyclergridview for changes and applying automatically...' && HERE=\"$(pwd)\"; pushd ../recyclergridview && yarn watch --copy \"$HERE/node_modules/recyclergridview/dist\"; popd"
   },
   "dependencies": {
     "expo": "~39.0.2",
@@ -13,10 +14,11 @@
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-39.0.3.tar.gz",
-    "react-native-web": "~0.13.12"
+    "react-native-web": "^0.13.16",
+    "react-remove-scroll": "^2.4.0",
+    "recyclergridview": "file:../recyclergridview"
   },
   "devDependencies": {
-    "react-native-web": "~0.13.7",
     "@types/react": "~16.9.35",
     "@types/react-dom": "~16.9.8",
     "@types/react-native": "~0.63.2",
