@@ -1,13 +1,17 @@
 import React from 'react';
 import {
     Animated,
-    Button,
     GestureResponderEvent,
+    InteractionManager,
     PanResponderGestureState,
+    Platform,
     StyleSheet,
-    Text,
     View,
 } from 'react-native';
+import {
+    Button,
+    Text,
+} from 'react-native-paper';
 import {
     GridLayoutSource,
     LayoutSource,
@@ -21,7 +25,7 @@ const kColumns = 1;
 
 export default function App() {
     const gridViewRef = React.useRef<RecyclerGridView>(null);
-    const scale$ = React.useRef(new Animated.ValueXY()).current;
+    const scale$ = React.useRef(new Animated.ValueXY({ x: 1, y: 1})).current;
     const itemSize$ = React.useRef(new Animated.ValueXY({
         x: 300,
         y: 300,
@@ -30,13 +34,28 @@ export default function App() {
     const selectedLocationRef = React.useRef({ x: 0, y: 0 });
     const pointPhaseRef = React.useRef(0);
 
-    React.useEffect(() => {
-        let timer = setInterval(() => {
-            pointPhaseRef.current += 1;
-            points.updateItems(gridViewRef.current!, { animated: true });
-        }, 1000);
-        return () => clearInterval(timer);
-    }, []);
+
+
+    // React.useEffect(() => {
+    //     let task: any;
+    //     let timer = setInterval(() => {
+    //         task?.cancel?.();
+    //         task = InteractionManager.runAfterInteractions(() => {
+    //             pointPhaseRef.current += 1;
+    //             points.updateItems(gridViewRef.current!, {
+    //                 animated: true,
+    //                 timing: {
+    //                     duration: 1000,
+    //                     // easing: x => Math.sin(x * Math.PI / 2),
+    //                 }
+    //             });
+    //         });
+    //     }, 1000);
+    //     return () => {
+    //         clearInterval(timer);
+    //         task?.cancel?.();
+    //     };
+    // }, []);
 
     const grid = React.useRef(new GridLayoutSource({
         reuseID: 'grid',
@@ -130,11 +149,34 @@ export default function App() {
         }
     }, []);
 
+    const applyScale = React.useCallback((coef: number) => {
+        let animation = Animated.spring(scale$, {
+            toValue: {
+                x: (scale$.x as any)._value * coef,
+                y: (scale$.y as any)._value * coef,
+            },
+            useNativeDriver: false,
+        });
+        animation.start();
+        return () => animation.stop();
+    }, []);
+
+    const offsetPointPhase = React.useCallback((phaseOffset: number) => {
+        pointPhaseRef.current += phaseOffset;
+        points.updateItems(gridViewRef.current!, {
+            animated: true,
+            // timing: {
+            //     duration: 1000,
+            //     // easing: x => Math.sin(x * Math.PI / 2),
+            // }
+        });
+    }, []);
+
     return (
         <View style={styles.container}>
         <RecyclerGridView
             ref={gridViewRef}
-            // scale={scale$}
+            scale={scale$}
             anchor={{ x: 0.5, y: 0.5 }}
             // onViewportSizeChanged={({ containerSize }) => {
             //     scale$.setValue({
@@ -148,7 +190,7 @@ export default function App() {
                 { index, animated, reuseID },
                 layoutSource
             ) => {
-                // console.debug(`[${layoutSource.id}] render item (${reuseID}): ${JSON.stringify(contentLayout.offset)}`);
+                // console.debug(`[${layoutSource.id}] render item (${reuseID}): ${JSON.stringify(index)}`);
                 if (reuseID === 'point') {
                     return (
                         <Animated.View
@@ -266,11 +308,12 @@ export default function App() {
             // renderItem={renderItem}
             style={styles.grid}
         />
-        {/* <View style={styles.toolbar}>
-            <Button title='-' onPress={() => {
-                Animated.spring()
-            }} />
-        </View> */}
+        <View style={styles.toolbar}>
+            <Button onPress={() => offsetPointPhase(-1)}>Phase –</Button>
+            <Button onPress={() => offsetPointPhase(1)}>Phase +</Button>
+            <Button onPress={() => applyScale(0.5)}>Scale –</Button>
+            <Button onPress={() => applyScale(1.5)}>Scale +</Button>
+        </View>
         </View>
     );
 }
@@ -290,7 +333,7 @@ const styles = StyleSheet.create({
     },
     toolbar: {
         height: 50,
-        flex: 1,
+        marginBottom: Platform.OS === 'ios' ? 10 : 0,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-around',
