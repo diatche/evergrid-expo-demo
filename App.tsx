@@ -28,6 +28,15 @@ export default function App() {
     })).current;
     const itemOrigin$ = React.useRef(new Animated.ValueXY()).current;
     const selectedLocationRef = React.useRef({ x: 0, y: 0 });
+    const pointPhaseRef = React.useRef(0);
+
+    React.useEffect(() => {
+        let timer = setInterval(() => {
+            pointPhaseRef.current += 1;
+            points.updateItems(gridViewRef.current!, { animated: true });
+        }, 1000);
+        return () => clearInterval(timer);
+    }, []);
 
     const grid = React.useRef(new GridLayoutSource({
         reuseID: 'grid',
@@ -43,30 +52,32 @@ export default function App() {
         shouldRenderItem: () => true,
     })).current;
 
+    const points = React.useRef(new CustomLayoutSource({
+        itemSize: { x: 20, y: 20}, 
+        reuseID: 'point',
+        getItemLayout: i => {
+            return {
+                offset: { x: i * 40, y: Math.sin(pointPhaseRef.current + i * 0.2) * 100 },
+            };
+        },
+        getVisibleIndexSet: (pointRange) => {
+            let indexSet = new Set<number>();
+            for (
+                let i = Math.floor(pointRange[0].x / 40);
+                i < Math.ceil(pointRange[1].x / 40);
+                i++
+            ) {
+                indexSet.add(i);
+            }
+            return indexSet;
+        },
+        shouldRenderItem: () => false,
+    })).current;
+
     const [layoutSources] = React.useState<LayoutSource[]>(() => {
         return [
             grid,
-            new CustomLayoutSource({
-                itemSize: { x: 20, y: 20}, 
-                reuseID: 'point',
-                getItemLayout: i => {
-                    return {
-                        offset: { x: i * 40, y: Math.sin(i * 0.2) * 100 },
-                    };
-                },
-                getVisibleIndexSet: (pointRange) => {
-                    let indexSet = new Set<number>();
-                    for (
-                        let i = Math.floor(pointRange[0].x / 40);
-                        i < Math.ceil(pointRange[1].x / 40);
-                        i++
-                    ) {
-                        indexSet.add(i);
-                    }
-                    return indexSet;
-                },
-                shouldRenderItem: () => false,
-            }),
+            points,
             new FlatLayoutSource({
                 reuseID: 'B',
                 itemSize: { x: itemSize$.x, y: 40}, 
