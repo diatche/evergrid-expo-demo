@@ -12,6 +12,7 @@ const Menu = ({ navigation }: MenuProps) => {
     return (
         <FlatList
             data={[
+                { id: 'Gallery', title: 'Gallery' },
                 { id: 'CondensedDemo', title: 'Condensed Demo' },
             ]}
             renderItem={({ item }) => (

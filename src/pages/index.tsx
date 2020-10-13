@@ -2,6 +2,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Menu from './Menu';
+import Gallery from './Demos/Gallery';
 import CondensedDemo from './Demos/CondensedDemo';
 import {
     MainStackList,
@@ -17,6 +18,10 @@ const Main = () => (
             options={{
                 title: 'RecycleGridViewExpoDemo',
             }}
+        />
+        <MainStack.Screen
+            name='Gallery'
+            component={Gallery}
         />
         <MainStack.Screen
             name='CondensedDemo'
