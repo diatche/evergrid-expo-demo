@@ -14,6 +14,8 @@ import {
     RecyclerGridView,
 } from 'recyclergridview';
 
+const createID = (index: any) => `${index.x}_${index.y}`;
+
 export default function App() {
     const gridViewRef = React.useRef<RecyclerGridView>(null);
     const scale$ = React.useRef(new Animated.ValueXY({ x: 1, y: 1})).current;
@@ -27,7 +29,13 @@ export default function App() {
             x: 300,
             y: 300,
         }, 
-        shouldRenderItem: () => true,
+        shouldRenderItem: ({ item }) => {
+            // let id = createID(item.index);
+            // console.debug(`will render ${id}`);
+            return true;
+        },
+        // willShowItem: item => console.debug(`will show ${createID(item.index)}`),
+        // willHideItem: item => console.debug(`will hide ${createID(item.index)}`),
     })).current;
 
     const applyScale = React.useCallback((coef: number) => {
@@ -50,7 +58,7 @@ export default function App() {
             anchor={{ x: 0.5, y: 0.5 }}
             layoutSources={[grid]}
             renderItem={({ index }) => {
-                let id = `${index.x}_${index.y}`;
+                let id = createID(index);
                 let item = items[id];
                 let isNew = !item;
                 if (!item) {
@@ -60,6 +68,7 @@ export default function App() {
                     items[id] = item;
                 }
                 let loadStartDate = 0;
+                // console.debug(`rendering ${id} (isNew: ${isNew})`);
                 return (
                     <Animated.View style={{
                         flex: 1,
