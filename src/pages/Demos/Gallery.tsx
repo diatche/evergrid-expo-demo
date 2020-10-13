@@ -69,7 +69,7 @@ export default function App() {
                             style={{ flex: 1 }}
                             key={id}
                             source={{
-                                uri: `https://placeimg.com/300/300/nature?${id}`,
+                                uri: `https://placeimg.com/${grid.itemSize.x}/${grid.itemSize.y}/nature?${id}`,
                             }}
                             resizeMode='cover'
                             onLoadStart={() => {
