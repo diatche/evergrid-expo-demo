@@ -2,7 +2,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Menu from './Menu';
-import CondensedDemo from './CondensedDemo';
+import CondensedDemo from './Demos/CondensedDemo';
 import {
     MainStackList,
 } from './types';
