@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 import {
     Button,
-    Text,
 } from 'react-native-paper';
 import {
     GridLayoutSource,
@@ -33,7 +32,7 @@ export default function App() {
     const itemOrigin$ = React.useRef(new Animated.ValueXY()).current;
     const selectedLocationRef = React.useRef({ x: 0, y: 0 });
     const pointPhaseRef = React.useRef(0);
-
+    const fontSize$ = React.useRef(Animated.multiply(scale$.x, 12)).current;
 
 
     // React.useEffect(() => {
@@ -226,30 +225,33 @@ export default function App() {
                             overflow: 'hidden',
                         }}
                     >
-                        <Text
+                        <Animated.Text
                             style={{
                                 width: '100%',
                                 textAlign: 'center',
+                                fontSize: fontSize$,
                             }}
                         >
                             {JSON.stringify(index)}
-                        </Text>
-                        <Text
+                        </Animated.Text>
+                        <Animated.Text
                             style={{
                                 width: '100%',
                                 textAlign: 'center',
+                                fontSize: fontSize$,
                             }}
                         >
                             {reuseID}
-                        </Text>
-                        <Text
+                        </Animated.Text>
+                        <Animated.Text
                             style={{
                                 width: '100%',
                                 textAlign: 'center',
+                                fontSize: fontSize$,
                             }}
                         >
                             {JSON.stringify(index)}
-                        </Text>
+                        </Animated.Text>
                     </View>
                 );
             }}
@@ -311,8 +313,8 @@ export default function App() {
         <View style={styles.toolbar}>
             <Button onPress={() => offsetPointPhase(-1)}>Phase –</Button>
             <Button onPress={() => offsetPointPhase(1)}>Phase +</Button>
-            <Button onPress={() => applyScale(0.5)}>Scale –</Button>
-            <Button onPress={() => applyScale(1.5)}>Scale +</Button>
+            <Button onPress={() => applyScale(1/1.6)}>Scale –</Button>
+            <Button onPress={() => applyScale(1.6)}>Scale +</Button>
         </View>
         </View>
     );
