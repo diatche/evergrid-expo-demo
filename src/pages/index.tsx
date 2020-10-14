@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Menu from './Menu';
 import Gallery from './Demos/Gallery';
+import Email from './Demos/Email';
 import CondensedDemo from './Demos/CondensedDemo';
 import {
     MainStackList,
@@ -22,6 +23,10 @@ const Main = () => (
         <MainStack.Screen
             name='Gallery'
             component={Gallery}
+        />
+        <MainStack.Screen
+            name='Email'
+            component={Email}
         />
         <MainStack.Screen
             name='CondensedDemo'
