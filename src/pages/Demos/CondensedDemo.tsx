@@ -22,7 +22,7 @@ import {
 const kRows = 1;
 const kColumns = 1;
 
-export default function App() {
+export default function CondensedDemo() {
     const gridViewRef = React.useRef<RecyclerGridView>(null);
     const scale$ = React.useRef(new Animated.ValueXY({ x: 1, y: 1})).current;
     const itemSize$ = React.useRef(new Animated.ValueXY({

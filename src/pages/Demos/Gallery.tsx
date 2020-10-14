@@ -16,7 +16,7 @@ import {
 
 const createID = (index: any) => `${index.x}_${index.y}`;
 
-export default function App() {
+export default function Gallery() {
     const gridViewRef = React.useRef<RecyclerGridView>(null);
     const scale$ = React.useRef(new Animated.ValueXY({ x: 1, y: 1})).current;
     const items = React.useRef<{ [id: string]: {

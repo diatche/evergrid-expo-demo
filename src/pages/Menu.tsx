@@ -14,6 +14,7 @@ const Menu = ({ navigation }: MenuProps) => {
             data={[
                 { id: 'Gallery', title: 'Gallery' },
                 { id: 'Email', title: 'Email' },
+                { id: 'Chart', title: 'Chart' },
                 { id: 'CondensedDemo', title: 'Condensed Demo' },
             ]}
             renderItem={({ item }) => (

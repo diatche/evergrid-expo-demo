@@ -6,6 +6,7 @@ export type MainStackList = {
     Menu: undefined;
     Gallery: undefined;
     Email: undefined;
+    Chart: undefined;
     CondensedDemo: undefined;
 };
 
@@ -14,17 +15,3 @@ export type MenuNavigationProp = StackNavigationProp<
     'Menu'
 >;
 
-export type GalleryNavigationProp = StackNavigationProp<
-    MainStackList,
-    'Gallery'
->;
-
-export type EmailNavigationProp = StackNavigationProp<
-    MainStackList,
-    'Email'
->;
-
-export type CondensedDemoNavigationProp = StackNavigationProp<
-    MainStackList,
-    'CondensedDemo'
->;

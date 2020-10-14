@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Menu from './Menu';
 import Gallery from './Demos/Gallery';
 import Email from './Demos/Email';
+import Chart from './Demos/Chart';
 import CondensedDemo from './Demos/CondensedDemo';
 import {
     MainStackList,
@@ -27,6 +28,10 @@ const Main = () => (
         <MainStack.Screen
             name='Email'
             component={Email}
+        />
+        <MainStack.Screen
+            name='Chart'
+            component={Chart}
         />
         <MainStack.Screen
             name='CondensedDemo'

@@ -29,7 +29,7 @@ const newItem = (): EmailItemProps => ({
     offset: new Animated.Value(0),
 });
 
-export default function App() {
+export default function Email() {
     const listRef = React.useRef<RecyclerGridView>(null);
     const items = React.useRef<EmailItemProps[]>([]).current;
     const selectedIndexRef = React.useRef<number | undefined>();
