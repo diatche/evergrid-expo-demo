@@ -210,15 +210,11 @@ const styles = StyleSheet.create({
         flex: 1,
         borderTopWidth: 1,
         borderColor: 'rgba(200, 210, 230, 0.5)',
-        borderStyle: 'dotted',
-        backgroundColor: 'transparent',
     },
     verticalGrid: {
         flex: 1,
         borderLeftWidth: 1,
         borderColor: 'rgba(200, 210, 230, 0.5)',
-        borderStyle: 'dotted',
-        backgroundColor: 'transparent',
     },
     rightAxis: {
         flex: 1,
@@ -271,12 +267,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: 'gray',
     },
-    // rightAxis: {
-    //     width: 60,
-    //     borderLeftWidth: 0.5,
-    //     borderColor: 'gray',
-    //     backgroundColor: 'white',
-    // },
     point: {
         flex: 1,
         // width: kPointRadius * 2,
