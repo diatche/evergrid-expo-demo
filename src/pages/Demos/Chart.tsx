@@ -25,7 +25,7 @@ const kXAxisHeight = 60;
 const kYAxisWidth = 60;
 
 export default function Chart() {
-    const gridViewRef = React.useRef<RecyclerGridView>(null);
+    const chartRef = React.useRef<RecyclerGridView>(null);
     const scale$ = React.useRef(new Animated.ValueXY({ x: kInitialScale, y: -kInitialScale})).current;
 
     const [layoutSources] = React.useState<LayoutSource[]>(() => {
@@ -153,7 +153,7 @@ export default function Chart() {
     return (
         <View style={styles.container}>
             <RecyclerGridView
-                ref={gridViewRef}
+                ref={chartRef}
                 scale={scale$}
                 anchor={{ x: 0.5, y: 0.5 }}
                 layoutSources={layoutSources}
@@ -196,6 +196,15 @@ export default function Chart() {
             <View style={styles.toolbar}>
                 <Button onPress={() => applyScale(1/1.6)}>Scale –</Button>
                 <Button onPress={() => applyScale(1.6)}>Scale +</Button>
+                <Button
+                    mode='contained'
+                    onPress={() => chartRef.current?.scrollToLocation({
+                        location: { x: 0, y: 0 },
+                        animated: true,
+                    })}
+                >
+                    Origin
+                </Button>
             </View>
         </View>
     );
