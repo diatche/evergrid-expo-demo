@@ -21,7 +21,7 @@ const kInitialScale = 50;
 const kStep: IPoint = { x: 1, y: 1 }
 const kPointRadius = 0.15;
 const kPointDensity = 1;
-const kXAxisHeight = 60;
+const kXAxisHeight = 38;
 const kYAxisWidth = 60;
 
 export default function Chart() {
