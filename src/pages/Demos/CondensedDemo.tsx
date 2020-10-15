@@ -2,7 +2,6 @@ import React from 'react';
 import {
     Animated,
     GestureResponderEvent,
-    InteractionManager,
     PanResponderGestureState,
     Platform,
     StyleSheet,
@@ -19,9 +18,6 @@ import {
     CustomLayoutSource,
 } from 'recyclergridview';
 
-const kRows = 1;
-const kColumns = 1;
-
 export default function CondensedDemo() {
     const gridViewRef = React.useRef<RecyclerGridView>(null);
     const scale$ = React.useRef(new Animated.ValueXY({ x: 1, y: 1})).current;
@@ -34,39 +30,10 @@ export default function CondensedDemo() {
     const pointPhaseRef = React.useRef(0);
     const fontSize$ = React.useRef(Animated.multiply(scale$.x, 12)).current;
 
-
-    // React.useEffect(() => {
-    //     let task: any;
-    //     let timer = setInterval(() => {
-    //         task?.cancel?.();
-    //         task = InteractionManager.runAfterInteractions(() => {
-    //             pointPhaseRef.current += 1;
-    //             points.updateItems(gridViewRef.current!, {
-    //                 animated: true,
-    //                 timing: {
-    //                     duration: 1000,
-    //                     // easing: x => Math.sin(x * Math.PI / 2),
-    //                 }
-    //             });
-    //         });
-    //     }, 1000);
-    //     return () => {
-    //         clearInterval(timer);
-    //         task?.cancel?.();
-    //     };
-    // }, []);
-
     const grid = React.useRef(new GridLayoutSource({
         reuseID: 'grid',
         itemSize: itemSize$, 
         origin: itemOrigin$,
-        insets: {
-            // top: 10,
-            // bottom: 20,
-            // right: scale$.x,
-            // right: 50,
-            // left: 50,
-        },
         shouldRenderItem: () => true,
     })).current;
 
@@ -102,10 +69,6 @@ export default function CondensedDemo() {
                 horizontal: true,
                 stickyEdge: 'bottom',
                 origin: { x: 0, y: -40 },
-                // scale: { x: 1, y: 0.1 },
-                insets: {
-                    // right: scale$.x,
-                },
                 shouldRenderItem: () => true,
             }),
             new FlatLayoutSource({
@@ -120,30 +83,22 @@ export default function CondensedDemo() {
     });
 
     const selectGrid = React.useCallback((e: GestureResponderEvent, g: PanResponderGestureState) => {
-        // console.debug('onPanResponderMove: ' + JSON.stringify([g.dx, g.dy]));
-        // let { moveX: x, moveY: y } = g;
         let view = gridViewRef.current!;
         if (!view.isPanningContent) {
             let pScreen = { x: e.nativeEvent.pageX, y: e.nativeEvent.pageY };
-            // console.debug(`pScreen: ${JSON.stringify(pScreen)}`);
             let pContainer = view.transformPointFromScreenToContainer(pScreen);
-            // console.debug(`pContainer: ${JSON.stringify(pContainer)}`);
             let pContent = grid.getLocation(pContainer, view);
-            // console.debug(`pContent: ${JSON.stringify(pContent)}`);
             let i = grid.getGridIndex(
                 pContent,
                 view,
                 { floor: true }
             );
-            // console.debug(`i: ${JSON.stringify(i)}`);
             let i0 = selectedLocationRef.current;
             if (i.x !== i0.x || i.y !== i0.y) {
                 selectedLocationRef.current = i;
                 console.debug(`Selected grid: ${JSON.stringify(i)}`);
                 grid.setItemNeedsRender(i0);
                 grid.setItemNeedsRender(i);
-                // let item = grid.getVisibleItem(i);
-                // grid.updateItem()
             }
         }
     }, []);
@@ -164,10 +119,6 @@ export default function CondensedDemo() {
         pointPhaseRef.current += phaseOffset;
         points.updateItems(gridViewRef.current!, {
             animated: true,
-            // timing: {
-            //     duration: 1000,
-            //     // easing: x => Math.sin(x * Math.PI / 2),
-            // }
         });
     }, []);
 
@@ -177,19 +128,11 @@ export default function CondensedDemo() {
             ref={gridViewRef}
             scale={scale$}
             anchor={{ x: 0.5, y: 0.5 }}
-            // onViewportSizeChanged={({ containerSize }) => {
-            //     scale$.setValue({
-            //         x: containerSize.x / kColumns,
-            //         y: -containerSize.y / kRows,
-            //     });
-            // }}
-            // panTarget={itemOrigin$}
             layoutSources={layoutSources}
             renderItem={(
                 { index, animated, reuseID },
                 layoutSource
             ) => {
-                // console.debug(`[${layoutSource.id}] render item (${reuseID}): ${JSON.stringify(index)}`);
                 if (reuseID === 'point') {
                     return (
                         <Animated.View
@@ -207,7 +150,6 @@ export default function CondensedDemo() {
                 }
                 let backgroundColor = 'rgba(255,255,255,0.8)';
                 if (reuseID === 'grid') {
-                    // console.debug(`Rendering grid item: ${JSON.stringify(index)}`);
                     let { x, y } = selectedLocationRef.current;
                     if (index.x === x && index.y === y) {
                         backgroundColor = 'rgba(200,200,200,0.8)';
@@ -255,11 +197,7 @@ export default function CondensedDemo() {
                     </View>
                 );
             }}
-            // verticalScrollEnabled={false}
             panResponderCallbacks={{
-                // onPanResponderStart: () => {
-                //     // console.debug('onPanResponderStart');
-                // },
                 onPanResponderMove: (e, g) => selectGrid(e, g),
             }}
             onLongPress={(e, g) => {
@@ -267,47 +205,6 @@ export default function CondensedDemo() {
                 console.debug('Pan default prevented');
                 selectGrid(e, g);
             }}
-            snapToLocation={({ location: p, scaledVelocity: v }) => {
-                return undefined;
-                // console.debug('v: ' + v.x);
-                let { x: i } = p;
-                // console.debug('i: ' + i);
-                let nearestIndex = Math.round(i);
-                let distToNearestIndex = i % 1;
-                if (distToNearestIndex < -0.5) {
-                    distToNearestIndex += 1;
-                }
-                distToNearestIndex = Math.abs(distToNearestIndex);
-                if (Math.abs(v.x) < 0.1) {
-                    // Tiny velocitys
-                    if (distToNearestIndex < 0.2) {
-                        return { x: nearestIndex };
-                    }
-                    return undefined;
-                } else if (Math.abs(v.x) < 0.4) {
-                    // Small velocity: small step
-                    if (v.x < 0) {
-                        return { x: Math.ceil(i) - 1 };
-                    } else {
-                        return { x: Math.floor(i) + 1 };
-                    }
-                } else {
-                    // High velocity: page step
-                    if (v.x < 0) {
-                        return {
-                            x: (Math.ceil(i / kColumns) - 1) * kColumns,
-                        };
-                    } else {
-                        return {
-                            x:
-                                (Math.floor(i / kColumns) + 1) *
-                                kColumns,
-                        };
-                    }
-                }
-            }}
-            // getItemLayout={({ index }) => engine.getSectionLayout(index)}
-            // renderItem={renderItem}
             style={styles.grid}
         />
         <View style={styles.toolbar}>
@@ -323,9 +220,6 @@ export default function CondensedDemo() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        // backgroundColor: '#fff',
-        // alignItems: 'center',
-        // justifyContent: 'center',
     },
     grid: {
         flex: 1,

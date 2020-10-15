@@ -2,13 +2,10 @@ import React from 'react';
 import {
     Animated,
     AppState,
-    Image,
-    PanResponder,
     StyleSheet,
     View,
 } from 'react-native';
 import {
-    Divider,
     Text,
 } from 'react-native-paper';
 import {
@@ -162,9 +159,7 @@ const EmailItem = React.memo(({ email, offset }: EmailItemProps) => {
         <Animated.View
             style={[styles.item, {
                 transform: [ { translateX: offset } ],
-                // position: 'absolute',
             }]}
-            // {...panResponder.panHandlers}
         >
             <Text style={[styles.sender, sender ? {} : { color: 'gray' }]}>
                 {sender || 'Loading...'}

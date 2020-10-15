@@ -262,8 +262,6 @@ const styles = StyleSheet.create({
     bottomAxisMajorContainer: {
         flex: 1,
         alignContent: 'center',
-        // borderColor: 'gray',
-        // borderWidth: 1,
     },
     bottomAxisMajorTick: {
         width: 1,
@@ -278,9 +276,6 @@ const styles = StyleSheet.create({
     },
     point: {
         flex: 1,
-        // width: kPointRadius * 2,
-        // height: kPointRadius * 2,
-        // borderRadius: kPointRadius,
         backgroundColor: 'rgb(100, 150, 200)',
     },
     toolbar: {

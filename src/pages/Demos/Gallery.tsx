@@ -29,13 +29,7 @@ export default function Gallery() {
             x: 300,
             y: 300,
         }, 
-        shouldRenderItem: ({ item }) => {
-            // let id = createID(item.index);
-            // console.debug(`will render ${id}`);
-            return true;
-        },
-        // willShowItem: item => console.debug(`will show ${createID(item.index)}`),
-        // willHideItem: item => console.debug(`will hide ${createID(item.index)}`),
+        shouldRenderItem: () => true,
     })).current;
 
     const applyScale = React.useCallback((coef: number) => {
@@ -68,7 +62,6 @@ export default function Gallery() {
                     items[id] = item;
                 }
                 let loadStartDate = 0;
-                // console.debug(`rendering ${id} (isNew: ${isNew})`);
                 return (
                     <Animated.View style={{
                         flex: 1,
