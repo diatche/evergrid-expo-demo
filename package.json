@@ -1,4 +1,6 @@
 {
+  "name": "recyclergridviewdemo",
+  "version": "0.0.1",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "start": "expo start",
@@ -6,8 +8,10 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
-    "watch": "echo 'Watching recyclergridview for changes and applying automatically...' && HERE=\"$(pwd)\"; pushd ../recyclergridview && yarn watch --copy \"$HERE/node_modules/recyclergridview/dist\"; popd"
+    "watch:recyclergridview": "echo 'Watching recyclergridview for changes and applying automatically...' && HERE=\"$(pwd)\"; pushd ../recyclergridview && yarn watch --copy \"$HERE/node_modules/recyclergridview/dist\"; popd"
   },
+  "author": "Pavel Diatchenko <diatche@gmail.com>",
+  "license": "Apache-2.0",
   "dependencies": {
     "@react-native-community/masked-view": "0.1.10",
     "@react-navigation/native": "^5.7.6",
@@ -31,6 +35,5 @@
     "@types/react-dom": "~16.9.8",
     "@types/react-native": "~0.63.2",
     "typescript": "~3.9.5"
-  },
-  "private": true
+  }
 }
