@@ -83,10 +83,10 @@ export default function Email() {
             style={styles.grid}
             panResponderCallbacks={{
                 onPanResponderStart: (e, g) => {
-                    let p = list.getLocation(listRef.current!.transformPointFromScreenToContainer({
-                        x: g.x0,
-                        y: g.y0,
-                    }), listRef.current!);
+                    let p = list.getLocation(
+                        listRef.current!.getContainerLocationWithEvent(e),
+                        listRef.current!
+                    );
                     let item = list.getVisibleItemAtLocation(p, listRef.current!);
                     if (item) {
                         console.debug(`Selected email at ${item.index}`);

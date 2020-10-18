@@ -85,8 +85,7 @@ export default function CondensedDemo() {
     const selectGrid = React.useCallback((e: GestureResponderEvent, g: PanResponderGestureState) => {
         let view = gridViewRef.current!;
         if (!view.isPanningContent) {
-            let pScreen = { x: e.nativeEvent.pageX, y: e.nativeEvent.pageY };
-            let pContainer = view.transformPointFromScreenToContainer(pScreen);
+            let pContainer = view.getContainerLocationWithEvent(e);
             let pContent = grid.getLocation(pContainer, view);
             let i = grid.getGridIndex(
                 pContent,
@@ -96,7 +95,6 @@ export default function CondensedDemo() {
             let i0 = selectedLocationRef.current;
             if (i.x !== i0.x || i.y !== i0.y) {
                 selectedLocationRef.current = i;
-                console.debug(`Selected grid: ${JSON.stringify(i)}`);
                 grid.setItemNeedsRender(i0);
                 grid.setItemNeedsRender(i);
             }
