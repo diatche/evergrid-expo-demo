@@ -11,7 +11,7 @@ import {
 import {
     FlatLayoutSource,
     RecyclerGridView,
-} from 'recyclergridview';
+} from 'recycler-grid-view';
 
 const kItemWidth = 300;
 const kItemHeight = 60;

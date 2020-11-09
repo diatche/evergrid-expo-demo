@@ -16,7 +16,7 @@ import {
     RecyclerGridView,
     FlatLayoutSource,
     CustomLayoutSource,
-} from 'recyclergridview';
+} from 'recycler-grid-view';
 
 export default function CondensedDemo() {
     const gridViewRef = React.useRef<RecyclerGridView>(null);

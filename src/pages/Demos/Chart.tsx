@@ -15,7 +15,7 @@ import {
     FlatLayoutSource,
     CustomLayoutSource,
     IPoint,
-} from 'recyclergridview';
+} from 'recycler-grid-view';
 
 const kInitialScale = 50;
 const kStep: IPoint = { x: 1, y: 1 }

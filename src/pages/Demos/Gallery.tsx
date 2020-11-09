@@ -12,7 +12,7 @@ import {
 import {
     GridLayoutSource,
     RecyclerGridView,
-} from 'recyclergridview';
+} from 'recycler-grid-view';
 
 const createID = (index: any) => `${index.x}_${index.y}`;
 
