@@ -1,5 +1,5 @@
-# RecyclerGridViewDemo
-A cross-platform infinite 2D scrollable view with efficient cell recycling using Animated framework, without using a scroll view. See [RecyclerGridView](https://github.com/diatche/recycler-grid-view).
+# Evergrid Expo Demo
+A cross-platform infinite 2D scrollable view with efficient cell recycling using Animated framework, without using a scroll view. See [Evergrid](https://github.com/diatche/evergrid).
 
 ## Installation
 
@@ -18,8 +18,10 @@ npm i -g expo-cli
 
 ## Development
 
-If you clone `RecyclerGridView` into the same parent folder as `RecyclerGridViewDemo`, then you can run the following command to automatically apply local changes made to `RecyclerGridView` on the fly:
+If you clone `evergrid` into the same parent folder as this demo, then you can run the following command to automatically apply local changes made to `evergrid` on the fly:
 
 ```bash
-yarn run watch:recycler-grid-view
+yarn run watch:evergrid
 ```
+
+This is only necessary if you want to test native builds. For web builds, using `yarn link evergrid` is preferrable.

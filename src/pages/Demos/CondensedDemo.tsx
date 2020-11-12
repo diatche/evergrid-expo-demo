@@ -16,7 +16,7 @@ import {
     RecyclerGridView,
     FlatLayoutSource,
     CustomLayoutSource,
-} from 'recycler-grid-view';
+} from 'evergrid';
 
 export default function CondensedDemo() {
     const gridViewRef = React.useRef<RecyclerGridView>(null);

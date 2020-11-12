@@ -12,7 +12,7 @@ import {
 import {
     GridLayoutSource,
     RecyclerGridView,
-} from 'recycler-grid-view';
+} from 'evergrid';
 
 const createID = (index: any) => `${index.x}_${index.y}`;
 

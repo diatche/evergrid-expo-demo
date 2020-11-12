@@ -11,7 +11,7 @@ import {
 import {
     FlatLayoutSource,
     RecyclerGridView,
-} from 'recycler-grid-view';
+} from 'evergrid';
 
 const kItemWidth = 300;
 const kItemHeight = 60;
