@@ -11,7 +11,7 @@ import {
 } from 'react-native-paper';
 import {
     LayoutSource,
-    RecyclerGridView,
+    Evergrid,
     FlatLayoutSource,
     CustomLayoutSource,
     IPoint,
@@ -25,7 +25,7 @@ const kXAxisHeight = 38;
 const kYAxisWidth = 60;
 
 export default function Chart() {
-    const chartRef = React.useRef<RecyclerGridView>(null);
+    const chartRef = React.useRef<Evergrid>(null);
     const scale$ = React.useRef(new Animated.ValueXY({ x: kInitialScale, y: -kInitialScale})).current;
 
     const [layoutSources] = React.useState<LayoutSource[]>(() => {
@@ -152,7 +152,7 @@ export default function Chart() {
 
     return (
         <View style={styles.container}>
-            <RecyclerGridView
+            <Evergrid
                 ref={chartRef}
                 scale={scale$}
                 anchor={{ x: 0.5, y: 0.5 }}

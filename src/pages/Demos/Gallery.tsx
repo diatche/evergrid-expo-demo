@@ -11,13 +11,13 @@ import {
 } from 'react-native-paper';
 import {
     GridLayoutSource,
-    RecyclerGridView,
+    Evergrid,
 } from 'evergrid';
 
 const createID = (index: any) => `${index.x}_${index.y}`;
 
 export default function Gallery() {
-    const gridViewRef = React.useRef<RecyclerGridView>(null);
+    const gridViewRef = React.useRef<Evergrid>(null);
     const scale$ = React.useRef(new Animated.ValueXY({ x: 1, y: 1})).current;
     const items = React.useRef<{ [id: string]: {
         opacity: Animated.Value,
@@ -46,7 +46,7 @@ export default function Gallery() {
 
     return (
         <View style={styles.container}>
-        <RecyclerGridView
+        <Evergrid
             ref={gridViewRef}
             scale={scale$}
             anchor={{ x: 0.5, y: 0.5 }}

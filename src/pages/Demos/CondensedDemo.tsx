@@ -13,13 +13,13 @@ import {
 import {
     GridLayoutSource,
     LayoutSource,
-    RecyclerGridView,
+    Evergrid,
     FlatLayoutSource,
     CustomLayoutSource,
 } from 'evergrid';
 
 export default function CondensedDemo() {
-    const gridViewRef = React.useRef<RecyclerGridView>(null);
+    const gridViewRef = React.useRef<Evergrid>(null);
     const scale$ = React.useRef(new Animated.ValueXY({ x: 1, y: 1})).current;
     const itemSize$ = React.useRef(new Animated.ValueXY({
         x: 300,
@@ -122,7 +122,7 @@ export default function CondensedDemo() {
 
     return (
         <View style={styles.container}>
-        <RecyclerGridView
+        <Evergrid
             ref={gridViewRef}
             scale={scale$}
             anchor={{ x: 0.5, y: 0.5 }}

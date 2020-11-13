@@ -10,7 +10,7 @@ import {
 } from 'react-native-paper';
 import {
     FlatLayoutSource,
-    RecyclerGridView,
+    Evergrid,
 } from 'evergrid';
 
 const kItemWidth = 300;
@@ -27,7 +27,7 @@ const newItem = (): EmailItemProps => ({
 });
 
 export default function Email() {
-    const listRef = React.useRef<RecyclerGridView>(null);
+    const listRef = React.useRef<Evergrid>(null);
     const items = React.useRef<EmailItemProps[]>([]).current;
     const selectedIndexRef = React.useRef<number | undefined>();
 
@@ -65,7 +65,7 @@ export default function Email() {
 
     return (
         <View style={styles.container}>
-        <RecyclerGridView
+        <Evergrid
             ref={listRef}
             anchor={{ x: 0.5, y: 0 }}
             layoutSources={[list]}
