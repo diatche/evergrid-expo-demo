@@ -11,6 +11,7 @@ import {
 import {
     FlatLayoutSource,
     Evergrid,
+    EvergridLayout,
 } from 'evergrid';
 
 const kItemWidth = 300;
@@ -27,7 +28,6 @@ const newItem = (): EmailItemProps => ({
 });
 
 export default function Email() {
-    const listRef = React.useRef<Evergrid>(null);
     const items = React.useRef<EmailItemProps[]>([]).current;
     const selectedIndexRef = React.useRef<number | undefined>();
 
@@ -43,6 +43,61 @@ export default function Email() {
         }
     })).current;
 
+    const [layout] = React.useState(() => {
+        return new EvergridLayout({
+            anchor: { x: 0.5, y: 0 },
+            layoutSources: [list],
+            onPanResponderStart: (e, g) => {
+                let p = list.getLocation(
+                    layout.getContainerLocationWithEvent(e)
+                );
+                let item = list.getVisibleItemAtLocation(p);
+                if (item) {
+                    console.debug(`Selected email at ${item.index}`);
+                    selectedIndexRef.current = item.index;
+                } else {
+                    console.debug(`Deselected email`);
+                    selectedIndexRef.current = undefined;
+                }
+            },
+            onPanResponderMove: (e, g) => {
+                if (!selectedIndexRef.current) {
+                    return;
+                }
+                Animated.event(
+                    [null, { dx: items[selectedIndexRef.current].offset }],
+                    { useNativeDriver: false }
+                )(e, g);
+            },
+            onPanResponderEnd: (e, g) => {
+                if (selectedIndexRef.current) {
+                    let index = selectedIndexRef.current;
+                    let item = items[index]
+                    let remove = g.dx < (-kItemWidth * 0.3);
+
+                    Animated.spring(item.offset, {
+                        toValue: remove ? -kItemWidth : 0,
+                        useNativeDriver: false,
+                    }).start(() => {
+                        item.offset.setValue(0);
+                    });
+
+                    if (remove) {
+                        // Shift data
+                        console.debug(`Deleted email at ${JSON.stringify(index)}`);
+                        items.splice(index, 1);
+
+                        // Remove row
+                        list.removeItem(
+                            { index },
+                            { animated: true }
+                        );
+                    }
+                }
+            },
+        });
+    });
+
     React.useEffect(() => {
         let timer = setInterval(() => {
             if (AppState.currentState === 'active') {
@@ -55,7 +110,6 @@ export default function Email() {
                 // Add row
                 list.addItem(
                     { index: 0 },
-                    listRef.current!,
                     { animated: true }
                 );
             }
@@ -66,9 +120,7 @@ export default function Email() {
     return (
         <View style={styles.container}>
         <Evergrid
-            ref={listRef}
-            anchor={{ x: 0.5, y: 0 }}
-            layoutSources={[list]}
+            layout={layout}
             renderItem={({ index }) => {
                 let item = items[index];
                 if (!item) {
@@ -81,58 +133,6 @@ export default function Email() {
                 return <EmailItem {...item} />;
             }}
             style={styles.grid}
-            panResponderCallbacks={{
-                onPanResponderStart: (e, g) => {
-                    let p = list.getLocation(
-                        listRef.current!.getContainerLocationWithEvent(e),
-                        listRef.current!
-                    );
-                    let item = list.getVisibleItemAtLocation(p, listRef.current!);
-                    if (item) {
-                        console.debug(`Selected email at ${item.index}`);
-                        selectedIndexRef.current = item.index;
-                    } else {
-                        console.debug(`Deselected email`);
-                        selectedIndexRef.current = undefined;
-                    }
-                },
-                onPanResponderMove: (e, g) => {
-                    if (!selectedIndexRef.current) {
-                        return;
-                    }
-                    Animated.event(
-                        [null, { dx: items[selectedIndexRef.current].offset }],
-                        { useNativeDriver: false }
-                    )(e, g);
-                },
-                onPanResponderEnd: (e, g) => {
-                    if (selectedIndexRef.current) {
-                        let index = selectedIndexRef.current;
-                        let item = items[index]
-                        let remove = g.dx < (-kItemWidth * 0.3);
-
-                        Animated.spring(item.offset, {
-                            toValue: remove ? -kItemWidth : 0,
-                            useNativeDriver: false,
-                        }).start(() => {
-                            item.offset.setValue(0);
-                        });
-
-                        if (remove) {
-                            // Shift data
-                            console.debug(`Deleted email at ${JSON.stringify(index)}`);
-                            items.splice(index, 1);
-
-                            // Remove row
-                            list.removeItem(
-                                { index },
-                                listRef.current!,
-                                { animated: true }
-                            );
-                        }
-                    }
-                },
-            }}
         />
         </View>
     );

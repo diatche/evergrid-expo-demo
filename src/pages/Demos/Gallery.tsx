@@ -12,12 +12,12 @@ import {
 import {
     GridLayoutSource,
     Evergrid,
+    EvergridLayout,
 } from 'evergrid';
 
 const createID = (index: any) => `${index.x}_${index.y}`;
 
 export default function Gallery() {
-    const gridViewRef = React.useRef<Evergrid>(null);
     const scale$ = React.useRef(new Animated.ValueXY({ x: 1, y: 1})).current;
     const items = React.useRef<{ [id: string]: {
         opacity: Animated.Value,
@@ -31,6 +31,14 @@ export default function Gallery() {
         }, 
         shouldRenderItem: () => true,
     })).current;
+
+    const [layout] = React.useState(() => {
+        return new EvergridLayout({
+            scale: scale$,
+            anchor: { x: 0.5, y: 0.5 },
+            layoutSources: [grid],
+        });
+    });
 
     const applyScale = React.useCallback((coef: number) => {
         let animation = Animated.spring(scale$, {
@@ -47,10 +55,7 @@ export default function Gallery() {
     return (
         <View style={styles.container}>
         <Evergrid
-            ref={gridViewRef}
-            scale={scale$}
-            anchor={{ x: 0.5, y: 0.5 }}
-            layoutSources={[grid]}
+            layout={layout}
             renderItem={({ index }) => {
                 let id = createID(index);
                 let item = items[id];

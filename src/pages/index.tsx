@@ -18,7 +18,7 @@ const Main = () => (
             name='Menu'
             component={Menu}
             options={{
-                title: 'RecycleGridViewExpoDemo',
+                title: 'Evergrid Expo Demo',
             }}
         />
         <MainStack.Screen

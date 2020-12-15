@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, FlatList, StyleSheet } from "react-native";
+import { FlatList, StyleSheet } from "react-native";
 import { Button } from 'react-native-paper';
 import { MenuNavigationProp } from "./types";
 
@@ -14,7 +14,7 @@ const Menu = ({ navigation }: MenuProps) => {
             data={[
                 { id: 'Gallery', title: 'Gallery' },
                 { id: 'Email', title: 'Email' },
-                { id: 'Chart', title: 'Chart' },
+                // { id: 'Chart', title: 'Chart' },
                 { id: 'CondensedDemo', title: 'Condensed Demo' },
             ]}
             renderItem={({ item }) => (

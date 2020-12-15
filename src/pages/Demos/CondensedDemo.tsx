@@ -12,14 +12,13 @@ import {
 } from 'react-native-paper';
 import {
     GridLayoutSource,
-    LayoutSource,
     Evergrid,
     FlatLayoutSource,
     CustomLayoutSource,
+    EvergridLayout,
 } from 'evergrid';
 
 export default function CondensedDemo() {
-    const gridViewRef = React.useRef<Evergrid>(null);
     const scale$ = React.useRef(new Animated.ValueXY({ x: 1, y: 1})).current;
     const itemSize$ = React.useRef(new Animated.ValueXY({
         x: 300,
@@ -59,41 +58,50 @@ export default function CondensedDemo() {
         shouldRenderItem: () => false,
     })).current;
 
-    const [layoutSources] = React.useState<LayoutSource[]>(() => {
-        return [
-            grid,
-            points,
-            new FlatLayoutSource({
-                reuseID: 'B',
-                itemSize: { x: itemSize$.x, y: 40}, 
-                horizontal: true,
-                stickyEdge: 'bottom',
-                origin: { x: 0, y: -40 },
-                shouldRenderItem: () => true,
-            }),
-            new FlatLayoutSource({
-                reuseID: 'R',
-                itemSize: { x: 40, y: itemSize$.y}, 
-                stickyEdge: 'right',
-                origin: { x: -40, y: 0 },
-                // scale: { x: 0.5, y: 1 },
-                shouldRenderItem: () => true,
-            }),
-        ];
+    const [layout] = React.useState(() => {
+        return new EvergridLayout({
+            scale: scale$,
+            anchor: { x: 0.5, y: 0.5 },
+            layoutSources: [
+                grid,
+                points,
+                new FlatLayoutSource({
+                    reuseID: 'B',
+                    itemSize: { x: itemSize$.x, y: 40}, 
+                    horizontal: true,
+                    stickyEdge: 'bottom',
+                    origin: { x: 0, y: -40 },
+                    shouldRenderItem: () => true,
+                }),
+                new FlatLayoutSource({
+                    reuseID: 'R',
+                    itemSize: { x: 40, y: itemSize$.y}, 
+                    stickyEdge: 'right',
+                    origin: { x: -40, y: 0 },
+                    // scale: { x: 0.5, y: 1 },
+                    shouldRenderItem: () => true,
+                }),
+            ],
+            onPanResponderMove: (e, g) => selectGrid(e, g),
+            onLongPress: (e, g) => {
+                layout.preventDefaultPan();
+                // console.debug('Pan default prevented');
+                selectGrid(e, g);
+            }
+        });
     });
 
     const selectGrid = React.useCallback((e: GestureResponderEvent, g: PanResponderGestureState) => {
-        let view = gridViewRef.current!;
-        if (!view.isPanningContent) {
-            let pContainer = view.getContainerLocationWithEvent(e);
-            let pContent = grid.getLocation(pContainer, view);
+        if (!layout.isPanningContent) {
+            let pContainer = layout.getContainerLocationWithEvent(e);
+            let pContent = grid.getLocation(pContainer);
             let i = grid.getGridIndex(
                 pContent,
-                view,
                 { floor: true }
             );
             let i0 = selectedLocationRef.current;
             if (i.x !== i0.x || i.y !== i0.y) {
+                console.debug(`Selecting grid at ${JSON.stringify(i)}`);
                 selectedLocationRef.current = i;
                 grid.setItemNeedsRender(i0);
                 grid.setItemNeedsRender(i);
@@ -115,7 +123,7 @@ export default function CondensedDemo() {
 
     const offsetPointPhase = React.useCallback((phaseOffset: number) => {
         pointPhaseRef.current += phaseOffset;
-        points.updateItems(gridViewRef.current!, {
+        points.updateItems({
             animated: true,
         });
     }, []);
@@ -123,13 +131,9 @@ export default function CondensedDemo() {
     return (
         <View style={styles.container}>
         <Evergrid
-            ref={gridViewRef}
-            scale={scale$}
-            anchor={{ x: 0.5, y: 0.5 }}
-            layoutSources={layoutSources}
+            layout={layout}
             renderItem={(
                 { index, animated, reuseID },
-                layoutSource
             ) => {
                 if (reuseID === 'point') {
                     return (
@@ -194,14 +198,6 @@ export default function CondensedDemo() {
                         </Animated.Text>
                     </View>
                 );
-            }}
-            panResponderCallbacks={{
-                onPanResponderMove: (e, g) => selectGrid(e, g),
-            }}
-            onLongPress={(e, g) => {
-                gridViewRef.current!.preventDefaultPan();
-                console.debug('Pan default prevented');
-                selectGrid(e, g);
             }}
             style={styles.grid}
         />

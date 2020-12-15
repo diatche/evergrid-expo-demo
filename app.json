@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "RecycleGridViewExpoDemo",
-    "slug": "RecycleGridViewExpoDemo",
+    "name": "Evergrid Expo Demo",
+    "slug": "evergrid-expo-demo",
     "version": "0.0.1",
     "orientation": "default",
     "icon": "./assets/icon.png",

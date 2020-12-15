@@ -10,11 +10,11 @@ import {
     Button,
 } from 'react-native-paper';
 import {
-    LayoutSource,
     Evergrid,
     FlatLayoutSource,
     CustomLayoutSource,
     IPoint,
+    EvergridLayout,
 } from 'evergrid';
 
 const kInitialScale = 50;
@@ -23,119 +23,124 @@ const kPointRadius = 0.15;
 const kPointDensity = 1;
 const kXAxisHeight = 38;
 const kYAxisWidth = 60;
+const kXAxisHeight$ = new Animated.Value(kXAxisHeight);
+const kYAxisWidth$ = new Animated.Value(kYAxisWidth);
 
 export default function Chart() {
-    const chartRef = React.useRef<Evergrid>(null);
     const scale$ = React.useRef(new Animated.ValueXY({ x: kInitialScale, y: -kInitialScale})).current;
 
-    const [layoutSources] = React.useState<LayoutSource[]>(() => {
-        return [
-            new FlatLayoutSource({
-                reuseID: 'verticalGrid',
-                itemSize: kStep,
-                getItemViewLayout: (i, view, layout) => ({
-                    size: {
-                        x: Animated.multiply(layout.getScale$(view).x, layout.itemSize.x),
-                        y: view.containerSize$.y,
-                    }
+    const [layout] = React.useState(() => {
+        return new EvergridLayout({
+            scale: scale$,
+            anchor: { x: 0.5, y: 0.5 },
+            layoutSources: [
+                new FlatLayoutSource({
+                    reuseID: 'verticalGrid',
+                    itemSize: kStep,
+                    getItemViewLayout: (i, layout) => ({
+                        size: {
+                            x: Animated.multiply(layout.getScale$().x, layout.itemSize.x),
+                            y: '100%',
+                        }
+                    }),
+                    horizontal: true,
+                    stickyEdge: 'top',
+                    shouldRenderItem: () => false,
                 }),
-                horizontal: true,
-                stickyEdge: 'top',
-                shouldRenderItem: () => false,
-            }),
-            new FlatLayoutSource({
-                reuseID: 'horizontalGrid',
-                itemSize: kStep,
-                getItemViewLayout: (i, view, layout) => ({
-                    size: {
-                        x: view.containerSize$.x,
-                        y: Animated.multiply(layout.getScale$(view).y, layout.itemSize.y),
-                    }
+                new FlatLayoutSource({
+                    reuseID: 'horizontalGrid',
+                    itemSize: kStep,
+                    getItemViewLayout: (i, layout) => ({
+                        size: {
+                            x: '100%',
+                            y: Animated.multiply(layout.getScale$().y, layout.itemSize.y),
+                        }
+                    }),
+                    stickyEdge: 'left',
+                    shouldRenderItem: () => false,
                 }),
-                stickyEdge: 'left',
-                shouldRenderItem: () => false,
-            }),
-            new CustomLayoutSource({
-                reuseID: 'point',
-                itemSize: { x: kPointRadius * 2, y: kPointRadius * 2 },
-                itemOrigin: { x: 0.5, y: 0.5 },
-                getItemLayout: i => {
-                    // i *= 0.1;
-                    return {
-                        offset: { x: i / kPointDensity, y: Math.sin(i * Math.PI * 0.1) * 2 },
-                    };
-                },
-                getVisibleIndexSet: (pointRange) => {
-                    let indexSet = new Set<number>();
-                    for (
-                        let i = Math.floor(pointRange[0].x * kPointDensity);
-                        i < Math.ceil(pointRange[1].x * kPointDensity);
-                        i++
-                    ) {
-                        indexSet.add(i);
-                    }
-                    return indexSet;
-                },
-                shouldRenderItem: () => false,
-            }),
-            new CustomLayoutSource({
-                reuseID: 'bottomAxis',
-                getItemViewLayout: (i, view) => ({
-                    offset: {
-                        x: 0,
-                        y: Animated.subtract(view.containerSize$.y, kXAxisHeight),
+                new CustomLayoutSource({
+                    reuseID: 'point',
+                    itemSize: { x: kPointRadius * 2, y: kPointRadius * 2 },
+                    itemOrigin: { x: 0.5, y: 0.5 },
+                    getItemLayout: i => {
+                        // i *= 0.1;
+                        return {
+                            offset: { x: i / kPointDensity, y: Math.sin(i * Math.PI * 0.1) * 2 },
+                        };
                     },
-                    size: {
-                        x: view.containerSize$.x,
-                        y: kXAxisHeight,
+                    getVisibleIndexSet: (pointRange) => {
+                        let indexSet = new Set<number>();
+                        for (
+                            let i = Math.floor(pointRange[0].x * kPointDensity);
+                            i < Math.ceil(pointRange[1].x * kPointDensity);
+                            i++
+                        ) {
+                            indexSet.add(i);
+                        }
+                        return indexSet;
                     },
+                    shouldRenderItem: () => false,
                 }),
-                getVisibleIndexSet: () => new Set([0]),
-                shouldRenderItem: () => false,
-            }),
-            new FlatLayoutSource({
-                reuseID: 'bottomAxisMajor',
-                itemSize: kStep,
-                getItemViewLayout: () => ({
-                    size: {
-                        x: 60,
-                        y: kXAxisHeight,
-                    }
+                new CustomLayoutSource({
+                    reuseID: 'bottomAxis',
+                    getItemViewLayout: (i, layout) => ({
+                        offset: {
+                            x: 0,
+                            y: Animated.subtract(layout.root.containerSize$.y, kXAxisHeight),
+                        },
+                        size: {
+                            x: '100%',
+                            y: kXAxisHeight,
+                        },
+                    }),
+                    getVisibleIndexSet: () => new Set([0]),
+                    shouldRenderItem: () => false,
                 }),
-                horizontal: true,
-                stickyEdge: 'bottom',
-                itemOrigin: { x: 0.5, y: 1 },
-                shouldRenderItem: () => true,
-            }),
-            new CustomLayoutSource({
-                reuseID: 'rightAxis',
-                getItemViewLayout: (i, view) => ({
-                    offset: {
-                        x: Animated.subtract(view.containerSize$.x, kYAxisWidth),
-                        y: 0,
+                new FlatLayoutSource({
+                    reuseID: 'bottomAxisMajor',
+                    itemSize: kStep,
+                    willUseItemViewLayout: (i, layout) => {
+                        layout.size = {
+                            x: new Animated.Value(60),
+                            y: kXAxisHeight$,
+                        }
                     },
-                    size: {
-                        x: kYAxisWidth,
-                        y: view.containerSize$.y,
-                    },
+                    horizontal: true,
+                    stickyEdge: 'bottom',
+                    // itemOrigin: { x: 0.5, y: 1 },
+                    shouldRenderItem: () => true,
                 }),
-                getVisibleIndexSet: () => new Set([0]),
-                shouldRenderItem: () => false,
-            }),
-            new FlatLayoutSource({
-                reuseID: 'rightAxisMajor',
-                itemSize: kStep,
-                getItemViewLayout: () => ({
-                    size: {
-                        x: kYAxisWidth,
-                        y: 40,
-                    }
+                new CustomLayoutSource({
+                    reuseID: 'rightAxis',
+                    getItemViewLayout: (i, layout) => ({
+                        offset: {
+                            x: Animated.subtract(layout.root.containerSize$.x, kYAxisWidth),
+                            y: 0,
+                        },
+                        size: {
+                            x: kYAxisWidth,
+                            y: '100%',
+                        },
+                    }),
+                    getVisibleIndexSet: () => new Set([0]),
+                    shouldRenderItem: () => false,
                 }),
-                stickyEdge: 'right',
-                itemOrigin: { x: 1, y: 0.5 },
-                shouldRenderItem: () => true,
-            }),
-        ];
+                new FlatLayoutSource({
+                    reuseID: 'rightAxisMajor',
+                    itemSize: kStep,
+                    getItemViewLayout: () => ({
+                        size: {
+                            x: kYAxisWidth,
+                            y: 40,
+                        }
+                    }),
+                    stickyEdge: 'right',
+                    itemOrigin: { x: 1, y: 0.5 },
+                    shouldRenderItem: () => true,
+                }),
+            ],
+        });
     });
 
     const applyScale = React.useCallback((coef: number) => {
@@ -153,10 +158,7 @@ export default function Chart() {
     return (
         <View style={styles.container}>
             <Evergrid
-                ref={chartRef}
-                scale={scale$}
-                anchor={{ x: 0.5, y: 0.5 }}
-                layoutSources={layoutSources}
+                layout={layout}
                 renderItem={({ index, animated, reuseID }) => {
                     switch (reuseID) {
                         case 'point':
@@ -198,8 +200,8 @@ export default function Chart() {
                 <Button onPress={() => applyScale(1.6)}>Scale +</Button>
                 <Button
                     mode='contained'
-                    onPress={() => chartRef.current?.scrollToLocation({
-                        location: { x: 0, y: 0 },
+                    onPress={() => layout.scrollToOffset({
+                        offset: { x: 0, y: 0 },
                         animated: true,
                     })}
                 >
