@@ -200,7 +200,7 @@ export default function Chart() {
                 <Button onPress={() => applyScale(1.6)}>Scale +</Button>
                 <Button
                     mode='contained'
-                    onPress={() => layout.scrollToOffset({
+                    onPress={() => layout.scrollTo({
                         offset: { x: 0, y: 0 },
                         animated: true,
                     })}

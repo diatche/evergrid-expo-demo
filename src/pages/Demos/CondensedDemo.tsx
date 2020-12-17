@@ -105,6 +105,22 @@ export default function CondensedDemo() {
                 selectedLocationRef.current = i;
                 grid.setItemNeedsRender(i0);
                 grid.setItemNeedsRender(i);
+
+                // Zoom to item
+                let itemLayout = grid.getItemContentLayout(i);
+                layout.scrollTo({
+                    range: [
+                        itemLayout.offset,
+                        {
+                            x: itemLayout.offset.x + itemLayout.size.x,
+                            y: itemLayout.offset.y + itemLayout.size.y,
+                        },
+                    ],
+                    animated: true,
+                    timing: {
+                        duration: 400,
+                    },
+                });
             }
         }
     }, []);
