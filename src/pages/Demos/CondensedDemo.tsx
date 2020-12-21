@@ -16,7 +16,20 @@ import {
     FlatLayoutSource,
     CustomLayoutSource,
     EvergridLayout,
+    IInsets,
 } from 'evergrid';
+
+const topAxisWidth = 30;
+const leftAxisWidth = 30;
+const bottomAxisWidth = 40;
+const rightAxisWidth = 40;
+
+const insets: IInsets<number> = {
+    left: leftAxisWidth,
+    right: rightAxisWidth,
+    top: topAxisWidth,
+    bottom: bottomAxisWidth,
+};
 
 export default function CondensedDemo() {
     const scale$ = React.useRef(new Animated.ValueXY({ x: 1, y: 1})).current;
@@ -34,6 +47,7 @@ export default function CondensedDemo() {
         itemSize: itemSize$, 
         origin: itemOrigin$,
         shouldRenderItem: () => true,
+        insets,
     })).current;
 
     const points = React.useRef(new CustomLayoutSource({
@@ -66,20 +80,48 @@ export default function CondensedDemo() {
                 grid,
                 points,
                 new FlatLayoutSource({
+                    reuseID: 'T',
+                    itemSize: { x: itemSize$.x, y: topAxisWidth}, 
+                    horizontal: true,
+                    stickyEdge: 'top',
+                    shouldRenderItem: () => true,
+                    insets: {
+                        left: insets.left,
+                        right: insets.right,
+                    },
+                }),
+                new FlatLayoutSource({
+                    reuseID: 'L',
+                    itemSize: { x: leftAxisWidth, y: itemSize$.y}, 
+                    stickyEdge: 'left',
+                    shouldRenderItem: () => true,
+                    insets: {
+                        top: insets.top,
+                        bottom: insets.bottom,
+                    },
+                }),
+                new FlatLayoutSource({
                     reuseID: 'B',
-                    itemSize: { x: itemSize$.x, y: 40}, 
+                    itemSize: { x: itemSize$.x, y: bottomAxisWidth}, 
                     horizontal: true,
                     stickyEdge: 'bottom',
-                    origin: { x: 0, y: -40 },
+                    origin: { x: 0, y: -bottomAxisWidth },
                     shouldRenderItem: () => true,
+                    insets: {
+                        left: insets.left,
+                        right: insets.right,
+                    },
                 }),
                 new FlatLayoutSource({
                     reuseID: 'R',
-                    itemSize: { x: 40, y: itemSize$.y}, 
+                    itemSize: { x: rightAxisWidth, y: itemSize$.y}, 
                     stickyEdge: 'right',
-                    origin: { x: -40, y: 0 },
-                    // scale: { x: 0.5, y: 1 },
+                    origin: { x: -rightAxisWidth, y: 0 },
                     shouldRenderItem: () => true,
+                    insets: {
+                        top: insets.top,
+                        bottom: insets.bottom,
+                    },
                 }),
             ],
             onPanResponderMove: (e, g) => selectGrid(e, g),
