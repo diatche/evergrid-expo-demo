@@ -17,12 +17,13 @@ import {
     CustomLayoutSource,
     EvergridLayout,
     IInsets,
+    zeroPoint,
 } from 'evergrid';
 
 const topAxisWidth = 30;
 const leftAxisWidth = 30;
-const bottomAxisWidth = 40;
-const rightAxisWidth = 40;
+const bottomAxisWidth = 60;
+const rightAxisWidth = 60;
 
 const insets: IInsets<number> = {
     left: leftAxisWidth,
@@ -32,7 +33,7 @@ const insets: IInsets<number> = {
 };
 
 export default function CondensedDemo() {
-    const scale$ = React.useRef(new Animated.ValueXY({ x: 1, y: 1})).current;
+    const scale$ = React.useRef(new Animated.ValueXY({ x: 1, y: 1 })).current;
     const itemSize$ = React.useRef(new Animated.ValueXY({
         x: 300,
         y: 300,
@@ -53,6 +54,7 @@ export default function CondensedDemo() {
     const points = React.useRef(new CustomLayoutSource({
         itemSize: { x: 20, y: 20}, 
         reuseID: 'point',
+        insets,
         getItemLayout: i => {
             return {
                 offset: { x: i * 40, y: Math.sin(pointPhaseRef.current + i * 0.2) * 100 },
@@ -75,13 +77,18 @@ export default function CondensedDemo() {
     const [layout] = React.useState(() => {
         return new EvergridLayout({
             scale: scale$,
+            // anchor: { x: 0, y: 0 },
             anchor: { x: 0.5, y: 0.5 },
+            // anchor: { x: 1, y: 1 },
             layoutSources: [
                 grid,
                 points,
                 new FlatLayoutSource({
                     reuseID: 'T',
-                    itemSize: { x: itemSize$.x, y: topAxisWidth}, 
+                    itemSize: itemSize$,
+                    willUseItemViewLayout: itemViewLayout => {
+                        itemViewLayout.size.y = new Animated.Value(insets.top);
+                    },
                     horizontal: true,
                     stickyEdge: 'top',
                     shouldRenderItem: () => true,
@@ -92,7 +99,10 @@ export default function CondensedDemo() {
                 }),
                 new FlatLayoutSource({
                     reuseID: 'L',
-                    itemSize: { x: leftAxisWidth, y: itemSize$.y}, 
+                    itemSize: itemSize$,
+                    willUseItemViewLayout: itemViewLayout => {
+                        itemViewLayout.size.x = new Animated.Value(insets.left);
+                    },
                     stickyEdge: 'left',
                     shouldRenderItem: () => true,
                     insets: {
@@ -102,10 +112,12 @@ export default function CondensedDemo() {
                 }),
                 new FlatLayoutSource({
                     reuseID: 'B',
-                    itemSize: { x: itemSize$.x, y: bottomAxisWidth}, 
+                    itemSize: itemSize$,
+                    willUseItemViewLayout: itemViewLayout => {
+                        itemViewLayout.size.y = new Animated.Value(insets.bottom);
+                    },
                     horizontal: true,
                     stickyEdge: 'bottom',
-                    origin: { x: 0, y: -bottomAxisWidth },
                     shouldRenderItem: () => true,
                     insets: {
                         left: insets.left,
@@ -114,9 +126,11 @@ export default function CondensedDemo() {
                 }),
                 new FlatLayoutSource({
                     reuseID: 'R',
-                    itemSize: { x: rightAxisWidth, y: itemSize$.y}, 
+                    itemSize: itemSize$,
+                    willUseItemViewLayout: itemViewLayout => {
+                        itemViewLayout.size.x = new Animated.Value(insets.right);
+                    },
                     stickyEdge: 'right',
-                    origin: { x: -rightAxisWidth, y: 0 },
                     shouldRenderItem: () => true,
                     insets: {
                         top: insets.top,
@@ -150,14 +164,28 @@ export default function CondensedDemo() {
 
                 // Zoom to item
                 let itemLayout = grid.getItemContentLayout(i);
+                let insetOffset = zeroPoint();
+                // let insetOffset = insetTranslation(
+                //     insets,
+                //     {
+                //         anchor: layout.anchor,
+                //         invertX: layout.scale.x < 0,
+                //         invertY: layout.scale.y < 0,
+                //     }
+                // );
                 layout.scrollTo({
                     range: [
-                        itemLayout.offset,
+                        {
+                            x: itemLayout.offset.x + insetOffset.x / layout.scale.x,
+                            y: itemLayout.offset.y + insetOffset.y / layout.scale.y,
+                        },
                         {
                             x: itemLayout.offset.x + itemLayout.size.x,
                             y: itemLayout.offset.y + itemLayout.size.y,
                         },
                     ],
+                    insets,
+                    // insets: anchoredInsets(insets, layout.anchor),
                     animated: true,
                     timing: {
                         duration: 400,

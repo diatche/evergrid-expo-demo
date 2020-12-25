@@ -100,8 +100,8 @@ export default function Chart() {
                 new FlatLayoutSource({
                     reuseID: 'bottomAxisMajor',
                     itemSize: kStep,
-                    willUseItemViewLayout: (i, layout) => {
-                        layout.size = {
+                    willUseItemViewLayout: itemViewLayout => {
+                        itemViewLayout.size = {
                             x: new Animated.Value(60),
                             y: kXAxisHeight$,
                         }
