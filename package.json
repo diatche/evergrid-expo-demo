@@ -14,8 +14,8 @@
   "license": "MIT",
   "dependencies": {
     "@react-native-community/masked-view": "0.1.10",
-    "@react-navigation/native": "^5.7.6",
-    "@react-navigation/stack": "^5.9.3",
+    "@react-navigation/native": "^5.9.3",
+    "@react-navigation/stack": "^5.14.3",
     "@types/faker": "^5.1.2",
     "@types/react": "~16.9.35",
     "evergrid": ">=0.0.1",
@@ -26,13 +26,15 @@
     "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-40.0.1.tar.gz",
     "react-native-gesture-handler": "~1.8.0",
-    "react-native-paper": "^4.2.0",
+    "react-native-paper": "^4.7.2",
+    "react-native-safe-area-context": "3.1.9",
     "react-native-screens": "~2.15.2",
     "react-native-web": "~0.13.12",
     "react-remove-scroll": "^2.4.0",
     "resize-observer-polyfill": "^1.5.1"
   },
   "devDependencies": {
+    "@babel/core": "^7.0.0",
     "@types/react-dom": "~16.9.8",
     "@types/react-native": "~0.63.2",
     "typescript": "~4.0.0"
